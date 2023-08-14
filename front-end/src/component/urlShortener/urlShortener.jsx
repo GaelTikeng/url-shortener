@@ -1,14 +1,29 @@
 import React from "react";
+import { useState } from "react";
+import axios from 'axios';
 
 import "./urlShortener.css";
 
 export default function UrlShortener() {
-
+  const [originalUrl, setOriginalUrl] = useState("");
+  // const [shortUrl, setShortUrl] = useState(0);
 
   const handleClick = () => {
-    
-  } 
+    // e.preventDefault()
+    // setShortUrl(Math.floor(Math.random() * 1000) + 1)
+    let rawData = null
+    console.log("input url", originalUrl)
+    axios.post("http://localhost:3001/api/shorturl", {
+      originalUrl
+    })
+    .then((response) => {
+      console.log("here is the response", response)
+      rawData = response.data
+      localStorage.setItem("url-object", JSON.stringify(rawData))
+    })
+    .catch((error) => console.log("An error occured", error))
 
+  };
 
   return (
     <div className="main-container">
@@ -20,13 +35,13 @@ export default function UrlShortener() {
           <p>URL:</p>
           <input
             type="text"
+            name="url"
+            // value={url}
             placeholder="https://www.freecodecamp.org"
             className="url"
+            onChange={(e) => setOriginalUrl(e.target.value)}
           />
-          <button
-            className="btn"
-            onClick={handleClick()}
-          >
+          <button className="btn" onClick={handleClick}>
             POST URL
           </button>
         </div>
