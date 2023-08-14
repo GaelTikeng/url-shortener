@@ -19,27 +19,51 @@ router.post("/api/shorturl", async (req, res) => {
   let shortUrl = Math.floor(Math.random() * 10000) + 1;
 
   try {
-    let expression =/(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?/g;
+    let object = {
+      original_url: originalUrl,
+      short_url: shortUrl,
+    };
+    let expression =
+      /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?/;
 
-    let regExp = new RegExp(expression)
+    let regExp = new RegExp(expression);
+
+    // test if the input url is a valid url
     if (originalUrl.match(regExp)) {
+      // test if there is an existing url in the DB
+      let allUrl = await Url.find({});
+      allUrl.map((url) => {
+        if (url.original_url === originalUrl) {
+          shortUrl = url.short_url;
+          console.log("true");
+        }
+        // console.log("these are all urls", url.original_url);
+      });
       await Url.create({
         original_url: originalUrl,
-        short_url: shortUrl
+        short_url: shortUrl,
       });
     } else {
-      res.json({"error": "Invalid URL"})
+      res.json({ error: "Invalid URL" });
+      return;
     }
-    
-    let object = {
-      originalUrl,
-      shortUrl,
-    }
-    console.log(object)
+
     res.json(object);
+  } catch (error) {
+    console.log("An error occured while creating", error);
   }
-  catch (error) {
-    console.log("An error occured while creating", error)
+});
+
+// get request to api/shorturl and redirect
+router.get("/api/shorturl/:input", async (req, res) => {
+  try {
+    const { input } = req.params;
+    let result = await Url.findOne({short_url: input})
+    console.log(result)
+    res.redirect(result.original_url)
+  }
+  catch (err) {
+    console.log("error while redirectiong")
   }
 });
 
