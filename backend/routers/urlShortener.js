@@ -23,6 +23,7 @@ router.post("/api/shorturl", async (req, res) => {
       original_url: originalUrl,
       short_url: shortUrl,
     };
+    // generating regular expressions
     let expression =
       /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?/;
 
@@ -36,6 +37,12 @@ router.post("/api/shorturl", async (req, res) => {
         if (url.original_url === originalUrl) {
           shortUrl = url.short_url;
           console.log("true");
+          res.json({
+            original_url: originalUrl,
+            short_url: shortUrl,
+            result: "link already exit in DB"
+          })
+          return
         }
         // console.log("these are all urls", url.original_url);
       });
@@ -59,7 +66,6 @@ router.get("/api/shorturl/:input", async (req, res) => {
   try {
     const { input } = req.params;
     let result = await Url.findOne({short_url: input})
-    console.log(result)
     res.redirect(result.original_url)
   }
   catch (err) {

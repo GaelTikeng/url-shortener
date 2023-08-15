@@ -1,18 +1,18 @@
 import React from "react";
 import { useState } from "react";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 import "./urlShortener.css";
 
 export default function UrlShortener() {
   const [originalUrl, setOriginalUrl] = useState("");
+  const navigate = useNavigate();
   // const [shortUrl, setShortUrl] = useState(0);
 
   const handleClick = () => {
     // e.preventDefault()
-    // setShortUrl(Math.floor(Math.random() * 1000) + 1)
     let rawData = null
-    console.log("input url", originalUrl)
     axios.post("http://localhost:3001/api/shorturl", {
       originalUrl
     })
@@ -22,7 +22,7 @@ export default function UrlShortener() {
       localStorage.setItem("url-object", JSON.stringify(rawData))
     })
     .catch((error) => console.log("An error occured", error))
-
+    navigate('/api/shorturl')
   };
 
   return (
