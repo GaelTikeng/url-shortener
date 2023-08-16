@@ -62,34 +62,31 @@ router.post("/api/shorturl", async (req, res) => {
 
 // get request to api/shorturl and redirect
 router.get("/api/shorturl/:id", async (req, res) => {
-  const { id } = req.params;
-  console.log("Here is the input", id);
-  // console.log(typeof input)
+  const id = req.params.id;
 
-  await Url.findOne({ short_url: id })
-    .then((red) => {
-      console.log(red);
-      if (red) {
-        // res.redirect('/user')
-        res.redirect(red.original_url);
-      } else {
-        res.json({ error: "url not found" });
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      res.send("An error occored while redirecting");
-    });
+  try {
+    const h = "https://";
+    const result = await Url.findOne({ short_url: id });
+    console.log(result.short_url.length)
 
-  // try {
-  //   let result = await Url.findOne({ short_url: input });
-  //   console.log(result.short_url)
-  //   res.redirect(result.original_url);
-  //   return
-  // }
-  // catch (err) {
-  //   console.log("error while redirecting", err);
-  // }
+    if (result.short_url.length > 4) {
+      console.log('url too long')
+      // rs.send({ error: "Not the exact url" });
+      return;
+    } else if (result.original_url.includes(h)) {
+      console.log("yes include");
+      res.redirect(`${result.original_url}`)
+      return
+    } else {
+      console.log("concatenating two strings");
+      res.redirect(`${h}${result.original_url}`);
+      return;
+    }
+
+    // res.redirect(`https://${result.original_url}`);
+  } catch (error) {
+    console.log("error occured while redirecting", error);
+  }
 });
 
 module.exports = router;
