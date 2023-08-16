@@ -66,17 +66,21 @@ router.get("/api/shorturl/:id", async (req, res) => {
 
   try {
     const h = "https://";
-    const result = await Url.findOne({ short_url: id });
-    console.log(result.short_url.length)
-
-    if (result.short_url.length > 4) {
-      console.log('url too long')
-      // rs.send({ error: "Not the exact url" });
+    let result;
+    if (id >= 10000) {
+      console.log("url too long");
+      res.send({ error: "Not the right format of url" });
       return;
-    } else if (result.original_url.includes(h)) {
+    }
+    result = await Url.findOne({ short_url: id });
+
+    console.log(result.short_url);
+    console.log(typeof result.short_url);
+
+    if (result.original_url.includes(h)) {
       console.log("yes include");
-      res.redirect(`${result.original_url}`)
-      return
+      res.redirect(`${result.original_url}`);
+      return;
     } else {
       console.log("concatenating two strings");
       res.redirect(`${h}${result.original_url}`);

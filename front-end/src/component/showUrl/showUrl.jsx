@@ -1,6 +1,4 @@
 import React from "react";
-
-
 import './showUrl.css';
 
 export default function ShowUrl () {
