@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<UrlShortener />}></Route>
-        <Route path="/api/shorturl" elelment={<ShowUrl />}></Route>
+        <Route path="/api/shorturl" element={<ShowUrl/>}></Route>
       </Routes>
     </BrowserRouter>
   );
