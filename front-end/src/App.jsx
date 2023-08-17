@@ -1,16 +1,18 @@
-import React from 'react'
-import UrlShortener from './component/urlShortener/urlShortener'
-import './App.css'
+import React from "react";
+import UrlShortener from "./component/urlShortener/urlShortener";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.css";
+import ShowUrl from "./component/showUrl/showUrl";
 
 function App() {
-
-
   return (
-    <div className='app'>
-      <UrlShortener/>
-      
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<UrlShortener />}></Route>
+        <Route path="/api/shorturl" element={<ShowUrl/>}></Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
