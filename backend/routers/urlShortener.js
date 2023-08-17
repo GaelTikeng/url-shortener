@@ -50,7 +50,6 @@ router.post("/api/shorturl", async (req, res) => {
         short_url: shortUrl,
       });
     }
-    console.log("second response");
     res.json({
       original_url: originalUrl,
       short_url: shortUrl,
@@ -69,25 +68,19 @@ router.get("/api/shorturl/:id", async (req, res) => {
     let result;
     if (id >= 10000) {
       console.log("url too long");
-      res.send({ error: "Not the right format of url" });
+      res.send({ error: "Not the right short url. Too long" });
       return;
     }
     result = await Url.findOne({ short_url: id });
 
-    console.log(result.short_url);
-    console.log(typeof result.short_url);
-
     if (result.original_url.includes(h)) {
-      console.log("yes include");
       res.redirect(`${result.original_url}`);
       return;
     } else {
-      console.log("concatenating two strings");
       res.redirect(`${h}${result.original_url}`);
       return;
     }
 
-    // res.redirect(`https://${result.original_url}`);
   } catch (error) {
     console.log("error occured while redirecting", error);
   }
